@@ -1,9 +1,12 @@
-var appRouter = function(app) {
-	
+var appRouter = function(app, c) {
 app.get("/", function(req, res) {
-    res.send("Hello World");
+    res.send(c.d);
 });
 
+app.get("/:deviceId/:value", function(req, res){
+    res.send({"Device": req.params.deviceId, "Value": req.params.value});
+    c.add({"Device": req.params.deviceId, "Value": req.params.value});
+});
 app.get("/account", function(req, res) {
     var accountMock = {
         "username": "nraboy",
@@ -21,4 +24,4 @@ app.get("/account", function(req, res) {
 
 }
 
-module.exports = appRouter;
+export default appRouter;
