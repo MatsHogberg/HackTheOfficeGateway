@@ -1,11 +1,16 @@
-var appRouter = function(app, c) {
-app.get("/", function(req, res) {
+var dataController = require("./controllers/dataController.js");
+var appRouter = function(app) {
+
+    app.get("/", function(req, res) {
     res.send(c.d);
 });
 
 app.get("/:deviceId/:value", function(req, res){
     res.send({"Device": req.params.deviceId, "Value": req.params.value});
-    c.add({"Device": req.params.deviceId, "Value": req.params.value});
+    dataController.handleUpdate(req,res);
+});
+app.get("/:deviceId/:value/:pushthru", function(req, res){
+
 });
 app.get("/account", function(req, res) {
     var accountMock = {
@@ -22,6 +27,5 @@ app.get("/account", function(req, res) {
     }
 });
 
-}
-
-export default appRouter;
+};
+module.exports = appRouter;
