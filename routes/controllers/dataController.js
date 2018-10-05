@@ -4,7 +4,7 @@ var cacheService = require("../controllers/cacheController.js");
 
 function postData(device, value){
 
-    return true;
+    return cacheService.pushData(device, value);
 }
 function addDataToCache(device, value){
     var cacheSize = cacheService.addData(device, value);

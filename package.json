@@ -9,6 +9,8 @@
   "author": "Mats",
   "license": "MIT",
   "dependencies": {
+    "azure-iot-device": "^1.7.4",
+    "azure-iot-device-mqtt": "^1.7.4",
     "body-parser": "^1.18.3",
     "express": "^4.16.3"
   }

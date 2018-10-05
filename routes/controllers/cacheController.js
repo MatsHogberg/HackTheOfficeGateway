@@ -18,9 +18,10 @@ exports.addData =  function(d,v){
 }
 exports.pushData = function(d,v){
     var tempArray = [];
-    d.push(createJson(d,v));
-    var result = iotService.send(d);
+    tempArray.push(createJson(d,v));
+    var result = iotService.send(tempArray);
     console.log("Data sent to hub");
+    return true;
 }
 exports.l = function(){
     return c.length;
