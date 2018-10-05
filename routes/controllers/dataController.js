@@ -8,9 +8,14 @@ function postData(device, value){
 }
 function addDataToCache(device, value){
     var cacheSize = cacheService.addData(device, value);
-    console.log("Entry with id " + device + " and value " + value + " successfully added to cache. Cache size is " + cacheSize + ".");
-
-    return true;
+    if(!cacheSize){
+        console.log("Cache is full. Send it away.");
+        return false;
+    }else{
+        var full = cacheService.isFull;
+        console.log("Entry with id " + device + " and value " + value + " successfully added to cache. Cache size is " + cacheSize + " and is full = " + full +".");
+        return true;
+    }
 }
 exports.handleUpdate = function(req, res){
     var deviceId = req.params.deviceId;
