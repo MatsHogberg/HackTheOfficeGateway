@@ -1,6 +1,6 @@
 'use strict';
 
-var cacheService = require("../controllers/cacheController.js"); 
+var cacheService = require("../services/cacheService.js"); 
 
 function postData(device, value){
 
@@ -20,32 +20,29 @@ function addDataToCache(device, value){
 function errorResponse(missingParameterName, res){
     res.status(500).json({message:"Parameter " + missingParameterName + " is missing."});
 }
-exports.handleUpdateQuery = function(req, res){
-    if(!req.query.deviceId && !req.params.value){
+
+function handleNewData(device,value,pushthru,res){
+    if(!device && !value){
         errorResponse("deviceId and value", res);
         return;
     }
-    if(!req.query.deviceId){
+    if(!device){
         errorResponse("deviceId", res);
         return;
     }
-    if(!req.query.value){
+    if(!value){
         errorResponse("value", res);
         return;
     }
-    var deviceId = req.query.deviceId;
-    var value = req.query.value;
-
-    var bypassCache = req.query.pushthru && req.query.pushthru == "true";
-    if(!bypassCache){
-        var status = addDataToCache(deviceId, value);
+    if(!pushthru){
+        var status = addDataToCache(device, value);
         if(!status){
             res.status(500).json({message:"Error adding data to cache"});
         }else{
             res.json({message:"OK - Add to cache"});
         }
     }else{
-        var status = postData(deviceId, value);
+        var status = postData(device, value);
         if(!status){
             res.status(500).json({message:"Error posting to IoT Hub"});
         }else{
@@ -53,35 +50,17 @@ exports.handleUpdateQuery = function(req, res){
         }
     }
 }
+
+exports.handleUpdateQuery = function(req, res){
+    var deviceId = req.query.deviceId;
+    var value = req.query.value;
+    var bypassCache = req.query.pushthru && req.query.pushthru=="true";
+    handleNewData(deviceId,value,bypassCache,res);
+}
+
 exports.handleUpdate = function(req, res){
-    if(!req.params.deviceId && !req.params.value){
-        errorResponse("deviceId and value", res);
-        return;
-    }
-    if(!req.params.deviceId){
-        errorResponse("deviceId", res);
-        return;
-    }
-    if(!req.params.value){
-        errorResponse("value", res);
-        return;
-    }
     var deviceId = req.params.deviceId;
     var value = req.params.value;
-    var bypassCache = req.params.pushthru && req.params.pushthru == "true";
-    if(!bypassCache){
-        var status = addDataToCache(deviceId, value);
-        if(!status){
-            res.status(500).json({message:"Error adding data to cache"});
-        }else{
-            res.json({message:"OK - Add to cache"});
-        }
-    }else{
-        var status = postData(deviceId, value);
-        if(!status){
-            res.status(500).json({message:"Error posting to IoT Hub"});
-        }else{
-            res.json({message:"OK - Pushthru"});
-        }
-    }
+    var bypassCache = req.params.pushthru &&  req.params.pushthru == "true";
+    handleNewData(deviceId,value,bypassCache,res);
 }

@@ -1,4 +1,4 @@
-var dataController = require("./controllers/dataController.js");
+var dataController = require("../controllers/dataController.js");
 var appRouter = function(app) {
 
     app.get("/", function(req, res) {

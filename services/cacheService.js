@@ -1,5 +1,5 @@
 'use strict';
-var iotService = require("../controllers/iotClientController.js");
+var iotService = require("./iotClientService.js");
 
 var maxNumberOfItemsInList = 10;
 var c = [];
@@ -10,6 +10,10 @@ exports.addData =  function(d,v){
     if(c.length < maxNumberOfItemsInList){
         var data=createJson(d,v);
         c.push(data);
+        if(c.length == maxNumberOfItemsInList){
+            var result = iotService.send(c);
+            c.length = 0;
+        }
         return c.length;
     }
     else{
