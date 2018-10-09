@@ -2,7 +2,7 @@ var dataController = require("./controllers/dataController.js");
 var appRouter = function(app) {
 
     app.get("/", function(req, res) {
-        res.send("Hack the office IoT Gateway");
+        dataController.handleUpdateQuery(req,res);
 });
 
 app.get("/:deviceId/:value", function(req, res){
