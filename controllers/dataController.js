@@ -2,18 +2,18 @@
 
 var cacheService = require("../services/cacheService.js"); 
 
-function postData(device, value){
+function postData(sensor, value){
 
-    return cacheService.pushData(device, value);
+    return cacheService.pushData(sensor, value);
 }
-function addDataToCache(device, value){
-    var cacheSize = cacheService.addData(device, value);
+function addDataToCache(sensor, value){
+    var cacheSize = cacheService.addData(sensor, value);
     if(!cacheSize){
         console.log("Cache is full. Send it away.");
         return false;
     }else{
         var full = cacheService.isFull;
-        console.log("Entry with id " + device + " and value " + value + " successfully added to cache. Cache size is " + cacheSize + " and is full = " + full +".");
+        console.log("Entry with sensor id " + sensor + " and value " + value + " successfully added to cache. Cache size is " + cacheSize + " and is full = " + full +".");
         return true;
     }
 }
@@ -21,13 +21,13 @@ function errorResponse(missingParameterName, res){
     res.status(500).json({message:"Parameter " + missingParameterName + " is missing."});
 }
 
-function handleNewData(device,value,pushthru,res){
-    if(!device && !value){
-        errorResponse("deviceId and value", res);
+function handleNewData(sensor,value,pushthru,res){
+    if(!sensor && !value){
+        errorResponse("sensorId and value", res);
         return;
     }
-    if(!device){
-        errorResponse("deviceId", res);
+    if(!sensor){
+        errorResponse("sensorId", res);
         return;
     }
     if(!value){
@@ -35,14 +35,14 @@ function handleNewData(device,value,pushthru,res){
         return;
     }
     if(!pushthru){
-        var status = addDataToCache(device, value);
+        var status = addDataToCache(sensor, value);
         if(!status){
             res.status(500).json({message:"Error adding data to cache"});
         }else{
             res.json({message:"OK - Add to cache"});
         }
     }else{
-        var status = postData(device, value);
+        var status = postData(sensor, value);
         if(!status){
             res.status(500).json({message:"Error posting to IoT Hub"});
         }else{
@@ -50,17 +50,40 @@ function handleNewData(device,value,pushthru,res){
         }
     }
 }
-
-exports.handleUpdateQuery = function(req, res){
-    var deviceId = req.query.deviceId;
-    var value = req.query.value;
-    var bypassCache = req.query.pushthru && req.query.pushthru=="true";
-    handleNewData(deviceId,value,bypassCache,res);
+/**
+ * Handles data posted as x-www-form-urlencoded
+ * @param {*} req 
+ * @param {*} res 
+ */
+exports.handleUpdatePost = function(req,res){
+    var sensorId = req.body.sensorid;
+    var value = req.body.value;
+    var bypassCache = req.body.pushthru && req.body.pushthru=="true";
+    handleNewData(sensorId,value,bypassCache,res);
 }
 
+/**
+ * Handle get requests with parameters, like
+ * http://url:port?sensorid=1&value=2&pushthru=true
+ * @param {*} req 
+ * @param {*} res 
+ */
+exports.handleUpdateQuery = function(req, res){
+    var sensorId = req.query.sensorid;
+    var value = req.query.value;
+    var bypassCache = req.query.pushthru && req.query.pushthru=="true";
+    handleNewData(sensorId,value,bypassCache,res);
+}
+
+/**
+ * Handles get requests like
+ * http://url:port/1/2/true
+ * @param {*} req 
+ * @param {*} res 
+ */
 exports.handleUpdate = function(req, res){
-    var deviceId = req.params.deviceId;
+    var sensorId = req.params.sensorid;
     var value = req.params.value;
     var bypassCache = req.params.pushthru &&  req.params.pushthru == "true";
-    handleNewData(deviceId,value,bypassCache,res);
+    handleNewData(sensorId,value,bypassCache,res);
 }
