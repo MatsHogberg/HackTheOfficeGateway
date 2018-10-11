@@ -1,5 +1,9 @@
+
 'use strict';
-var connectionString = "{Your device connection string here}";
+/* hub.js isn't included in the repo for obvious reasons... */
+var secrets = require("./hub.js");
+var connectionString = secrets.connectionstring;
+
 var Mqtt = require("azure-iot-device-mqtt").Mqtt;
 var DeviceClient = require("azure-iot-device").Client;
 var Message = require("azure-iot-device").Message;
