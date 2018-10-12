@@ -11,25 +11,17 @@ var client = DeviceClient.fromConnectionString(connectionString, Mqtt);
 
 /**
  * Sends an array of data away to the IoT hub.
- * Once we have a hub set up, and a connection string for our device,
- * uncomment the code below. 
- * @param {*} d 
  */  
 function sendToIoTHub(d){
-    console.log("Connection string: " + connectionString);
     var payload = JSON.stringify(d);
     var message = new Message(payload);
     client.sendEvent(message, function(err){
-        console.log("\r\n***********************\r\n");
         if(err){
             console.error("Send error: " + err.toString());
-             return false;
         }else{
-            console.log("**********\r\nMessage sent.\r\n**********");
+            console.log("*************\r\nMessage sent.\r\n*************");
         }
     });
-    console.log(payload);
-    console.log("Sent to hub.");
     return true;
 }
 exports.send = function(dataArray){
