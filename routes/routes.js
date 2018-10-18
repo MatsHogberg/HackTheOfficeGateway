@@ -14,18 +14,30 @@ var appRouter = function(app) {
     });
 
     /**
+     * 
+     */
+    app.get("/flush", function(req, res){
+        dataController.flushCache();
+    });
+    /**
+     * Route for setting cache size
+     */
+    app.get("/cachesize/:size", function(req, res){
+        dataController.handleCacheSize(req, res);
+    });
+    /**
      * Route for get requests with 2 parameters,
      * like http://url:port/sensorid/value
      */
-    app.get("/:sensorid/:value", function(req, res){
+    app.get("/data/:sensorid/:value", function(req, res){
         dataController.handleUpdate(req,res);
     });
 
     /**
      * Route for get requests with 3 parameters,
-     * like http://url:port/sensorid/value/true
+     * like http://url:port/data/sensorid/value/true
      */
-    app.get("/:sensorid/:value/:pushthru", function(req, res){
+    app.get("/data/:sensorid/:value/:pushthru", function(req, res){
         dataController.handleUpdate(req,res);
     });
     /**
