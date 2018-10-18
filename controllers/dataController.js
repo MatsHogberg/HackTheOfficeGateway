@@ -6,6 +6,11 @@ function postData(sensor, value){
 
     return cacheService.pushData(sensor, value);
 }
+
+function setCacheSize(value){
+    cacheService.setCacheSize(value);
+}
+
 function addDataToCache(sensor, value){
     var cacheSize = cacheService.addData(sensor, value);
     if(!cacheSize){
@@ -50,6 +55,25 @@ function handleNewData(sensor,value,pushthru,res){
         }
     }
 }
+
+/**
+ * Flush the cache
+ */
+exports.flushCache = function(){
+    cacheService.flushCache();
+}
+
+/**
+ * Handles change cache size requests
+ */
+ exports.handleCacheSize = function(req, res){
+     var newCacheSize = req.params.size;
+     if(isNaN(newCacheSize)){
+        errorResponse("size", res);
+        return;
+     }
+     cacheService.setCacheSize(parseInt(newCacheSize));
+ }
 /**
  * Handles data posted as x-www-form-urlencoded
  * @param {*} req 

@@ -9,8 +9,27 @@ function createJson(d,v){
     return {Id:d,Value:v,TimeStamp: timeStamp};
 }
 
+function sendCache(){
+    var t = c;
+    c.length = 0;
+    iotService.send(t);
+}
+
 function formatDateTime(dt){
     return dateFormat(dt, "yyyy-mm-dd HH:MM:ss");
+}
+exports.setCacheSize = function(size){
+    maxNumberOfItemsInList = size;
+    var currentcacheSize = c.length;
+    if(currentcacheSize >= size){
+        sendCache();
+    }
+    console.log("New cache size = " + size);
+}
+
+exports.flushCache = function(){
+    sendCache();
+    console.log("Cache flushed");
 }
 
 exports.addData =  function(d,v){
@@ -18,8 +37,7 @@ exports.addData =  function(d,v){
         var data=createJson(d,v);
         c.push(data);
         if(c.length == maxNumberOfItemsInList){
-            var result = iotService.send(c);
-            c.length = 0;
+            sendCache();
         }
         return c.length;
     }
