@@ -1,8 +1,13 @@
 'use strict';
 var iotService = require("./iotClientService.js");
 var dateFormat = require("dateformat");
+var config = require("./configService.js");
+var maxNumberOfItemsInList = config.cacheSize;
 
-var maxNumberOfItemsInList = 10;
+var interval = setInterval(function(){
+    sendCache();
+   },config.timeDelay);
+
 var c = [];
 function createJson(d,v){
     var timeStamp = formatDateTime(new Date());
@@ -10,6 +15,10 @@ function createJson(d,v){
 }
 
 function sendCache(){
+    if(c.length == 0){
+        console.log("Cache is empty");
+        return;
+    }
     var t = c;
     c.length = 0;
     iotService.send(t);
@@ -24,7 +33,17 @@ exports.setCacheSize = function(size){
     if(currentcacheSize >= size){
         sendCache();
     }
+
+    config.setCacheSize(size);
     console.log("New cache size = " + size);
+}
+
+exports.setInterval = function(delay){
+    config.setTimeDelay(delay);
+    clearInterval(interval);
+    interval = setInterval(function(){
+        sendCache();
+       },delay);
 }
 
 exports.flushCache = function(){

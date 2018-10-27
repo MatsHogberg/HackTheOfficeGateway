@@ -1,7 +1,7 @@
 'use strict';
 
 var cacheService = require("../services/cacheService.js"); 
-
+var config = require("../services/configService.js");
 function postData(sensor, value){
 
     return cacheService.pushData(sensor, value);
@@ -9,6 +9,7 @@ function postData(sensor, value){
 
 function setCacheSize(value){
     cacheService.setCacheSize(value);
+    config.setCacheSize(value);
 }
 
 function addDataToCache(sensor, value){
@@ -73,7 +74,20 @@ exports.flushCache = function(){
         return;
      }
      cacheService.setCacheSize(parseInt(newCacheSize));
+     res.json("OK - cacheSize changed.");
  }
+/**
+ * Handles delay changes
+ */
+exports.handleIntervalChanges = function(req,res){
+    var newDelay = req.params.delay;
+    if(isNaN(newDelay)){
+        errorResponse("delay", res);
+        return;
+    }
+    cacheService.setInterval(parseInt(newDelay));
+    res.json("OK - Interval changed.");
+}
 /**
  * Handles data posted as x-www-form-urlencoded
  * @param {*} req 

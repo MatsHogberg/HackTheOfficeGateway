@@ -1,16 +1,21 @@
 var nconf = require('nconf');
 var defaults = {
-    cacheSize: 10,
-    timeDelay: 50000,
-    connectionString: "HostName=HTOHub.azure-devices.net;DeviceId=HtoGateway;SharedAccessKey=EmedySYRW/5HfGUCLI2cvRcjQm1l/av6LTcr0oZkdhE="
+    cacheSize: 100,
+    timeDelay: 5000,
+    connectionString: "HostName=ConnectedOffice-IoT.azure-devices.net;DeviceId=OfficeGateway1;SharedAccessKey=vHWCTfQZr/bh4JAhPJe/c7G3h1kfFa4Izcdw6xGoxHY="
 };
 nconf.argv()
      .env()
-     .file({ file: "../config.json" })
+     .file("./config.json")
      .defaults(defaults);
-exports.connectionString = nconf.connectionString;
-exports.timeDelay = nconf.timeDelay;
-exports.cacheSize = nconf.cacheSize;
+exports.connectionString = nconf.get("connectionString");
+exports.timeDelay = nconf.get("timeDelay");
+exports.cacheSize = nconf.get("cacheSize");
+
+console.log("Config parameters:");
+console.log("\tConnection string:\t" + nconf.get("connectionString"));
+console.log("\tCache size:       \t" +  nconf.get("cacheSize"));
+console.log("\tPost interval:    \t" + nconf.get("timeDelay"));
 
 exports.setTimeDelay = function(newDelay){
     nconf.set("timeDelay", newDelay);

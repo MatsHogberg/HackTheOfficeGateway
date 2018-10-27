@@ -25,6 +25,13 @@ var appRouter = function(app) {
     app.get("/cachesize/:size", function(req, res){
         dataController.handleCacheSize(req, res);
     });
+
+    /**
+     * Route for timer setting
+     */
+    app.get("/interval/:delay", function(req, res){
+        dataController.handleIntervalChanges(req, res);
+    });
     /**
      * Route for get requests with 2 parameters,
      * like http://url:port/sensorid/value

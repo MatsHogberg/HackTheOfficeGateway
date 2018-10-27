@@ -2,7 +2,9 @@
 'use strict';
 /* hub.js isn't included in the repo for obvious reasons... */
 var secrets = require("./hub.js");
-var connectionString = secrets.connectionstring;
+var config = require("./configService.js");
+
+var connectionString = config.connectionString;// secrets.connectionstring;
 
 var Mqtt = require("azure-iot-device-mqtt").Mqtt;
 var DeviceClient = require("azure-iot-device").Client;
