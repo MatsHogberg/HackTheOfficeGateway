@@ -1,5 +1,5 @@
 var dataController = require("../controllers/dataController.js");
-
+var viewController = require("../controllers/viewController.js");
 /**
  * The routes.
  * 
@@ -9,7 +9,7 @@ var appRouter = function(app) {
      * Route for get requests with query string data,
      * like  http://url:port?sensorid=1&value=2[&pushthru=true]
      */
-    app.get("/", function(req, res) {
+    app.get("/data", function(req, res) {
         dataController.handleUpdateQuery(req,res);
     });
 
@@ -52,6 +52,13 @@ var appRouter = function(app) {
      */
     app.post("/", function(req, res){
         dataController.handleUpdatePost(req,res);
+    });
+    app.get("/", function(req, res){
+        viewController.showFrontPage(req,res);
+    });
+
+    app.get("/settings", function(req, res){
+        dataController.handleSettingsRequest(req,res);
     });
 };
 module.exports = appRouter;

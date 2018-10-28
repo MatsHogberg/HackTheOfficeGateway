@@ -27,6 +27,24 @@ function sendCache(){
 function formatDateTime(dt){
     return dateFormat(dt, "yyyy-mm-dd HH:MM:ss");
 }
+
+function validateSensor(sensorId){
+    var allSensors = config.sensors();
+    console.log("Number of sensors: " + allSensors.length);
+    var found = allSensors.find(function(element){
+        return element.id == sensorId;
+    });
+    if(found === undefined){
+        console.log("Sensor with id " + sensorId + " could not be found - Rejecting.");
+        console.log("Configured sensors:");
+        allSensors.forEach(sensor => {
+            console.log(sensor);
+        });
+        return false;
+    }
+    console.log("Found sensor with ID " + sensorId + ": " + JSON.stringify(found));
+    return true;
+}
 exports.setCacheSize = function(size){
     maxNumberOfItemsInList = size;
     var currentcacheSize = c.length;
@@ -52,6 +70,9 @@ exports.flushCache = function(){
 }
 
 exports.addData =  function(d,v){
+    if(!validateSensor(d)){
+        return c.length;
+    }
     if(c.length < maxNumberOfItemsInList){
         var data=createJson(d,v);
         c.push(data);
@@ -65,6 +86,9 @@ exports.addData =  function(d,v){
     }
 }
 exports.pushData = function(d,v){
+    if(!validateSensor(d)){
+        return false;
+    }
     var tempArray = [];
     tempArray.push(createJson(d,v));
     var result = iotService.send(tempArray);

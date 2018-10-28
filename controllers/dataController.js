@@ -63,7 +63,14 @@ function handleNewData(sensor,value,pushthru,res){
 exports.flushCache = function(){
     cacheService.flushCache();
 }
-
+exports.handleSettingsRequest = function(req, res){
+    var response = {
+        connectionstring: config.connectionString,
+        delay: config.timeDelay,
+        cachesize: config.cacheSize
+    };
+    res.json(response);
+}
 /**
  * Handles change cache size requests
  */
